@@ -1,32 +1,87 @@
-from tkinter import RAISED, Tk, Label, Entry, Button, Text
+from tkinter import END, RAISED, Tk, Label, Entry, Button, Text
+
+from rdflib import Graph
+from rdflib import URIRef
+from rdflib.namespace import RDF
+from rdflib.namespace import FOAF
+
 
 root = Tk()
-root.configure(bg='yellow')
+root.geometry("1000x500")
 
 # Titre 
-title_label = Label(root, text="OID")
-title_label.pack(anchor="n")
+#title_label = Label(root, text="OID")
+#title_label.pack(anchor="n")
+#title_label.grid(row=0, column=0)
 
-# Title entry 
-title_entry = Entry(root, width=25)
-title_entry.pack(anchor="nw")
+# Entry 
+label_source = Label(text="Fichier source : ", anchor='w')
+##label_source.pack(anchor="w", fill='both')
+label_source.grid(row=0, column=0)
 
-#Save button function
+entry_source = Entry(width=25)
+entry_source.insert(END, "source.ttl")
+entry_source.grid(row=1, column=0)
 
-def save(): 
-    pass
+label_target = Label( text="Fichier cible : ", anchor='w')
+label_target.grid(row=0, column=1)
 
-save_button = Button(root, text="Save", command=save)
-save_button.pack() 
+entry_target = Entry(width=25)
+entry_target.insert(END, "target.ttl")
+entry_target.grid(row=1, column=1)
+
+# Compare button function
+def open_source(): 
+    source = str(entry_source.get())
+    g = Graph()
+    source = g.parse(source, format="ttl")
+
+    source_output.delete('1.0', END)
+    #affichage(source)
+    for subj, pred, obj in source:
+        source_output.insert(END, "---------------------------------------------------\n")
+        source_output.insert(END, "subj : " + subj) 
+        source_output.insert(END, "pred : " + pred) 
+        source_output.insert(END, "obj : " + obj) 
+
+        if (subj, pred, obj) not in source:
+            raise Exception("It better be!")
+
+def open_target(): 
+    # Recuperer le text des deux entry 
+    target = str(entry_target.get())
+
+    #pass
+    g = Graph()
+    target = g.parse(target, format="ttl")
+
+    target_output.delete('1.0', END)
+    #affichage(target)
+    for subj, pred, obj in target:
+        target_output.insert(END, "---------------------------------------------------\n")
+        target_output.insert(END, "subj : " + subj) 
+        target_output.insert(END, "pred : " + pred) 
+        target_output.insert(END, "obj : " + obj) 
+
+        if (subj, pred, obj) not in target:
+            raise Exception("It better be!")
+
+    
+source_button = Button(root, text="Ouvrir", command=open_source)
+source_button.grid(row=2, column=0)
+
+target_button = Button(root, text="Ouvrir", command=open_target)
+target_button.grid(row=2, column=1)
 
 #Cerate text entry 
-text_entry = Text(width=40, height=30, border=4, relief=RAISED)
-text_entry.pack() 
+source_output = Text(width=60, height=30, border=4, relief=RAISED)
+source_output.insert(END, "")
+source_output.grid(row=3, column=0)
 
-#root.configure(bg='yellow')
-#root.configure(background='white')
-#root["bg"] = "white"
-#root['background']='white'
+target_output = Text(width=60, height=30, border=4, relief=RAISED)
+target_output.insert(END, "")
+target_output.grid(row=3, column=1)
+
 
 root.mainloop() 
 
