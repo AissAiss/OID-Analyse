@@ -1,8 +1,9 @@
-import tkinter as tk
-        
-app = tk.Tk()
-app.title("configure method")
-app.geometry('300x200')
+from tkinter import *
+root = Tk()
 
-app.configure(bg='red')
-app.mainloop()
+Label(text="Position 1", width=10).grid(row=0, column=0)
+Label(text="Position 2", width=10).grid(row=0, column=1)
+Label(text="Position 3", width=10).grid(row=1, column=0)
+Label(text="Position 4", width=10).grid(row=1, column=1)
+
+root.mainloop()
