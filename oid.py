@@ -1,4 +1,5 @@
 from tkinter import END, RAISED, Tk, Label, Entry, Button, Text
+from numpy import source
 
 from rdflib import Graph
 from rdflib import URIRef
@@ -7,8 +8,7 @@ from rdflib.namespace import FOAF
 
 
 root = Tk()
-root.geometry("1000x500")
-
+root.geometry("1000x800")
 
 # Entry 
 label_source = Label(text="Fichier source : ", anchor='w')
@@ -29,16 +29,15 @@ entry_target.grid(row=1, column=1)
 # Compare button function
 def open_source(): 
     source = str(entry_source.get())
-    g = Graph()
-    source = g.parse(source, format="ttl")
+    source = Graph().parse(source, format="ttl")
 
     source_output.delete('1.0', END)
     #affichage(source)
     for subj, pred, obj in source:
         source_output.insert(END, "---------------------------------------------------\n")
-        source_output.insert(END, "subj : " + subj) 
-        source_output.insert(END, "pred : " + pred) 
-        source_output.insert(END, "obj : " + obj) 
+        source_output.insert(END, "subj : " + subj + "\n") 
+        source_output.insert(END, "pred : " + pred + "\n") 
+        source_output.insert(END, "obj : " + obj + "\n") 
 
         if (subj, pred, obj) not in source:
             raise Exception("It better be!")
@@ -46,22 +45,39 @@ def open_source():
 def open_target(): 
     # Recuperer le text des deux entry 
     target = str(entry_target.get())
-
-    #pass
-    g = Graph()
-    target = g.parse(target, format="ttl")
+    target = Graph().parse(target, format="ttl")
 
     target_output.delete('1.0', END)
     #affichage(target)
     for subj, pred, obj in target:
         target_output.insert(END, "---------------------------------------------------\n")
-        target_output.insert(END, "subj : " + subj) 
-        target_output.insert(END, "pred : " + pred) 
-        target_output.insert(END, "obj : " + obj) 
+        target_output.insert(END, "subj : " + subj + "\n" ) 
+        target_output.insert(END, "pred : " + pred + "\n") 
+        target_output.insert(END, "obj : " + obj + "\n") 
 
         if (subj, pred, obj) not in target:
             raise Exception("It better be!")
 
+
+def bilan(): 
+    source = str(entry_source.get())
+    source = Graph().parse(source, format="ttl")
+    target = str(entry_target.get())
+    target = Graph().parse(target, format="ttl")
+
+    add = source + target
+    diff = source - target
+    inter = source & target
+    xor = target ^ source
+
+    bilan_output.delete('1.0', END)
+    #Print the number of "triples" in the Graph
+    bilan_output.insert(END, "      Graph source : " + str(len(source)) + " statements.\n")
+    bilan_output.insert(END, "      Graph target : " + str(len(target)) + " statements.\n")
+    bilan_output.insert(END, "       Graph union : " + str(len(add)) + " statements.\n")
+    bilan_output.insert(END, "  Graph difference : " + str(len(diff)) + " statements.\n")
+    bilan_output.insert(END, "Graph intersection : " + str(len(inter)) + " statements.\n")
+    bilan_output.insert(END, "         Graph XOR : " + str(len(xor)) + " statements.\n")
     
 source_button = Button(root, text="Ouvrir", command=open_source)
 source_button.grid(row=2, column=0)
@@ -69,7 +85,10 @@ source_button.grid(row=2, column=0)
 target_button = Button(root, text="Ouvrir", command=open_target)
 target_button.grid(row=2, column=1)
 
-#Cerate text entry 
+bilan_button = Button(root, text="Bilan", command=bilan)
+bilan_button.grid(row=4, column=0)
+
+# Output
 source_output = Text(width=60, height=30, border=4, relief=RAISED)
 source_output.insert(END, "")
 source_output.grid(row=3, column=0)
@@ -77,6 +96,10 @@ source_output.grid(row=3, column=0)
 target_output = Text(width=60, height=30, border=4, relief=RAISED)
 target_output.insert(END, "")
 target_output.grid(row=3, column=1)
+
+bilan_output = Text(width=60, height=10, border=4, relief=RAISED)
+bilan_output.insert(END, "")
+bilan_output.grid(row=5, column=0)
 
 
 root.mainloop() 
