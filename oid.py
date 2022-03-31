@@ -9,10 +9,6 @@ from rdflib.namespace import FOAF
 root = Tk()
 root.geometry("1000x500")
 
-# Titre 
-#title_label = Label(root, text="OID")
-#title_label.pack(anchor="n")
-#title_label.grid(row=0, column=0)
 
 # Entry 
 label_source = Label(text="Fichier source : ", anchor='w')
@@ -84,4 +80,3 @@ target_output.grid(row=3, column=1)
 
 
 root.mainloop() 
-
