@@ -1,4 +1,4 @@
-from tkinter import END, RAISED, Tk, Label, Entry, Button, Text
+from tkinter import END, RAISED, Tk, Label, Entry, Button, Text, ttk
 from numpy import source
 
 from rdflib import Graph
@@ -6,13 +6,19 @@ from rdflib import URIRef
 from rdflib.namespace import RDF
 from rdflib.namespace import FOAF
 
+source = ""
+target = ""
+add = ""
+diff = ""
+inter = ""
+xor = ""
+
 
 root = Tk()
-root.geometry("1000x800")
+root.attributes("-fullscreen", True)
 
 # Entry 
 label_source = Label(text="Fichier source : ", anchor='w')
-##label_source.pack(anchor="w", fill='both')
 label_source.grid(row=0, column=0)
 
 entry_source = Entry(width=25)
@@ -28,6 +34,7 @@ entry_target.grid(row=1, column=1)
 
 # Compare button function
 def open_source(): 
+    global source
     source = str(entry_source.get())
     source = Graph().parse(source, format="ttl")
 
@@ -43,6 +50,7 @@ def open_source():
             raise Exception("It better be!")
 
 def open_target(): 
+    global target
     # Recuperer le text des deux entry 
     target = str(entry_target.get())
     target = Graph().parse(target, format="ttl")
@@ -60,10 +68,20 @@ def open_target():
 
 
 def bilan(): 
-    source = str(entry_source.get())
-    source = Graph().parse(source, format="ttl")
-    target = str(entry_target.get())
-    target = Graph().parse(target, format="ttl")
+    global source
+    global target
+    global add
+    global diff
+    global inter
+    global xor
+
+    if source == "" : 
+        source = str(entry_source.get())
+        source = Graph().parse(source, format="ttl")
+
+    if target == "": 
+        target = str(entry_target.get())
+        target = Graph().parse(target, format="ttl")
 
     add = source + target
     diff = source - target
@@ -86,7 +104,7 @@ target_button = Button(root, text="Ouvrir", command=open_target)
 target_button.grid(row=2, column=1)
 
 bilan_button = Button(root, text="Bilan", command=bilan)
-bilan_button.grid(row=4, column=0)
+bilan_button.grid(row=2, column=2)
 
 # Output
 source_output = Text(width=60, height=30, border=4, relief=RAISED)
@@ -99,7 +117,36 @@ target_output.grid(row=3, column=1)
 
 bilan_output = Text(width=60, height=10, border=4, relief=RAISED)
 bilan_output.insert(END, "")
-bilan_output.grid(row=5, column=0)
+bilan_output.grid(row=3, column=2)
+
+# ------------------------ Frequences ---------------------------------
+def analyse():
+    pass
+
+title_frequences = Label(text="Fréquences : ", anchor='w')
+title_frequences.grid(row=6, column=0)
+
+listeGraph=["Source", "Cible", "Union", "Difference", "Intersection", "XOR"]
+listeCombo = ttk.Combobox(root, values=listeGraph)
+listeCombo.current(0)
+listeCombo.grid(row=7, column=0)
+
+analyse_button = Button(root, text="Analyse", command=analyse)
+analyse_button.grid(row=8, column=0)
+
+
+subjects_output = Text(width=60, height=30, border=4, relief=RAISED)
+subjects_output.insert(END, "")
+subjects_output.grid(row=9, column=0)
+
+predicates_output = Text(width=60, height=30, border=4, relief=RAISED)
+predicates_output.insert(END, "")
+predicates_output.grid(row=9, column=1)
+
+objects_output = Text(width=60, height=30, border=4, relief=RAISED)
+objects_output.insert(END, "")
+objects_output.grid(row=9, column=2)
+
 
 
 root.mainloop() 
