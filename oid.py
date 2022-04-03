@@ -15,7 +15,8 @@ xor = ""
 
 
 root = Tk()
-root.attributes("-fullscreen", True)
+#root.attributes("-fullscreen", True)
+root.geometry("1300x800")
 
 # Entry 
 label_source = Label(text="Fichier source : ", anchor='w')
@@ -65,7 +66,6 @@ def open_target():
 
         if (subj, pred, obj) not in target:
             raise Exception("It better be!")
-
 
 def bilan(): 
     global source
@@ -120,8 +120,72 @@ bilan_output.insert(END, "")
 bilan_output.grid(row=3, column=2)
 
 # ------------------------ Frequences ---------------------------------
-def analyse():
-    pass
+def printAllFrequences(graph):
+    source_output.delete('1.0', END)
+    predicates_output.delete('1.0', END)
+    objects_output.delete('1.0', END)
+
+    subjects = {}
+    predicates = {}
+    objects = {}
+
+    subjectsOrdered = {}
+    predicatesOrdered = {}
+    objectsOrdered = {}
+
+    for s, p, o in source.triples((None,  None, None)):
+        s = str(s)
+        p = str(p)
+        o = str(o)
+        
+        if s in subjects :
+            subjects[s] += 1
+        else :
+            subjects[s] = 0 
+            
+        if p in predicates :
+            predicates[p] += 1
+        else :
+            predicates[p] = 0 
+            
+        if o in objects :
+            objects[o] += 1
+        else :
+            objects[o] = 0 
+
+    for i in sorted(subjects, key=subjects.get, reverse=True):
+        subjectsOrdered[i] = subjects[i]
+        
+    for i in sorted(predicates, key=predicates.get, reverse=True):
+        predicatesOrdered[i] = predicates[i]
+
+    for i in sorted(objects, key=objects.get, reverse=True):
+        objectsOrdered[i] = objects[i]
+
+    for w in subjectsOrdered: 
+        subjects_output.insert(END, str(subjectsOrdered[w]) + " : " + str(w) + "\n")
+
+    for w in predicatesOrdered: 
+        predicates_output.insert(END, str(predicatesOrdered[w]) + " : " +  str(w)+ "\n")
+
+    for w in objectsOrdered: 
+        objects_output.insert(END, str(objectsOrdered[w]) + " : " +  str(w)+ "\n")
+
+def analyse(): 
+    graphSelected = str(listeCombo.get())
+
+    if graphSelected == "Source": 
+        printAllFrequences(graph=source)
+    elif graphSelected == "Cible": 
+        printAllFrequences(graph=target)
+    elif graphSelected == "Union": 
+        printAllFrequences(graph=add)
+    elif graphSelected == "Difference": 
+        printAllFrequences(graph=diff)
+    elif graphSelected == "Intersection": 
+        printAllFrequences(graph=inter)
+    elif graphSelected == "XOR": 
+        printAllFrequences(graph=xor)
 
 title_frequences = Label(text="Fréquences : ", anchor='w')
 title_frequences.grid(row=6, column=0)
