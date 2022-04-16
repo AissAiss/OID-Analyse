@@ -121,7 +121,7 @@ bilan_output.grid(row=3, column=2)
 
 # ------------------------ Frequences ---------------------------------
 def printAllFrequences(graph):
-    source_output.delete('1.0', END)
+    subjects_output.delete('1.0', END)
     predicates_output.delete('1.0', END)
     objects_output.delete('1.0', END)
 
@@ -133,7 +133,7 @@ def printAllFrequences(graph):
     predicatesOrdered = {}
     objectsOrdered = {}
 
-    for s, p, o in source.triples((None,  None, None)):
+    for s, p, o in graph.triples((None,  None, None)):
         s = str(s)
         p = str(p)
         o = str(o)
@@ -175,17 +175,17 @@ def analyse():
     graphSelected = str(listeCombo.get())
 
     if graphSelected == "Source": 
-        printAllFrequences(graph=source)
+        printAllFrequences(source)
     elif graphSelected == "Cible": 
-        printAllFrequences(graph=target)
+        printAllFrequences(target)
     elif graphSelected == "Union": 
-        printAllFrequences(graph=add)
+        printAllFrequences(add)
     elif graphSelected == "Difference": 
-        printAllFrequences(graph=diff)
+        printAllFrequences(diff)
     elif graphSelected == "Intersection": 
-        printAllFrequences(graph=inter)
+        printAllFrequences(inter)
     elif graphSelected == "XOR": 
-        printAllFrequences(graph=xor)
+        printAllFrequences(xor)
 
 title_frequences = Label(text="Fréquences : ", anchor='w')
 title_frequences.grid(row=6, column=0)
